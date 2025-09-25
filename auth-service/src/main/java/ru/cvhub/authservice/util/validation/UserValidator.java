@@ -7,7 +7,6 @@ import ru.cvhub.authservice.store.repository.UserRepository;
 import ru.cvhub.authservice.util.exception.EmailAlreadyExistsException;
 import ru.cvhub.authservice.util.exception.InvalidInputException;
 import ru.cvhub.authservice.util.exception.PreconditionException;
-import ru.cvhub.authservice.util.exception.WeakPasswordException;
 
 @Component
 @RequiredArgsConstructor
@@ -25,10 +24,10 @@ public class UserValidator implements Validator<UserValidator, UserService.UserD
         if (obj.password() == null || obj.password().isBlank()) {
             throw new InvalidInputException("Password must be at least 8 characters");
         }
-        if (obj.password().length() < 8 ||
-                !obj.password().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-            throw new WeakPasswordException("Password must contain letters, numbers, and special characters");
-        }
+//        if (obj.password().length() < 8 ||
+//                !obj.password().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+//            throw new WeakPasswordException("Password must contain letters, numbers, and special characters");
+//        }
         return this;
     }
 
