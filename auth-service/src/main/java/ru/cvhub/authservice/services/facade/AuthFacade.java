@@ -1,25 +1,13 @@
 package ru.cvhub.authservice.services.facade;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.cvhub.authservice.grpc.AS;
-import ru.cvhub.authservice.services.UserService;
-import ru.cvhub.authservice.util.mapping.Mapper;
+import org.jetbrains.annotations.NotNull;
+import ru.cvhub.authservice.services.dto.TokenDto;
+import ru.cvhub.authservice.services.dto.UserDto;
 
-@Service
-@RequiredArgsConstructor
-public class AuthFacade {
-    private final UserService userService;
+public interface AuthFacade {
+    @NotNull TokenDto register(@NotNull UserDto request);
 
-    public AS.TokenResponse register(AS.RegisterRequest request) {
-        AS.TokenResponse response = Mapper.toResponse(
-                userService.createUser(Mapper.toDto(request))
-        );
+    @NotNull TokenDto login(@NotNull UserDto request);
 
-        /*
-         * generate and return token
-         * mfa etc.
-         */
-        return response;
-    }
+    @NotNull TokenDto refresh(@NotNull TokenDto request);
 }

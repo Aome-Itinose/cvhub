@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role { //todo: enum?
+public class Role {
     @Id
     @Column(name = "id", nullable = false)
     UUID id;

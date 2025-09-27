@@ -36,7 +36,7 @@ public class Session {
 
     @ColumnDefault("true")
     @Column(name = "is_valid", nullable = false)
-    Boolean isValid = false;
+    Boolean isValid;
 
     public Session(UUID userId, Long sessionDurationMs) {
         this.refreshToken = UuidCreator.getTimeOrderedEpoch();

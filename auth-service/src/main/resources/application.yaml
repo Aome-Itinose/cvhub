@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+
+grpc:
+  server:
+    port: 9090
+    reflection-service-enabled: true
+
+security:
+  session:
+    ttl: P1D
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: PT1H
+    issuer: auth-service
+    audience: auth-client
