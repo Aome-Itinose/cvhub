@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+grpc:
+  server:
+    port: 9090
+    reflection-service-enabled: true
+
+security:
+  session:
+    ttl: P1D
+  jwt:
+    secret: test_secret
+    expiration: PT1H
+    issuer: auth-service
+    audience: auth-client

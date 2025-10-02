@@ -4,7 +4,8 @@ public class AuthenticationException extends RuntimeException {
     public AuthenticationException(String message) {
         super(message);
     }
-    public AuthenticationException(Throwable cause) {
-        super(cause.getMessage(), cause);
+
+    public static AuthenticationException invalidCredentials() {
+        return new AuthenticationException("Invalid credentials");
     }
 }

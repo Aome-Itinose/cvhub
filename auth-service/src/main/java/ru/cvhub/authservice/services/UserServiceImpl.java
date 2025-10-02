@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.cvhub.authservice.services.dto.UserDto;
 import ru.cvhub.authservice.store.entity.User;
 import ru.cvhub.authservice.store.repository.UserRepository;
+import ru.cvhub.authservice.util.exception.InactiveUserException;
 import ru.cvhub.authservice.util.exception.IncorrectPasswordException;
 import ru.cvhub.authservice.util.exception.UserCreationFailedException;
 import ru.cvhub.authservice.util.exception.UserNotFoundException;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     public @NotNull User registerUser(@NotNull UserDto userDto) {
         try {
-            userValidator.validate(userDto);
+            userValidator.throwIfExists(userDto);
             return userRepository.save(Mapper.toEntity(userDto, passwordEncoder));
         } catch (DataAccessException e) {
             throw new UserCreationFailedException("Database error during user creation: " + e.getMessage());
@@ -39,8 +40,12 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = maybeUser.get();
-        if (!passwordEncoder.matches(userDto.password(), user.getPasswordHash())) {
+        if (!passwordEncoder.matches(userDto.password(), user.passwordHash())) {
             throw new IncorrectPasswordException();
+        }
+
+        if (!user.isActive()) {
+            throw InactiveUserException.userInactive();
         }
         return user;
     }

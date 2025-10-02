@@ -12,32 +12,32 @@ import ru.cvhub.authservice.store.entity.User;
 import ru.cvhub.authservice.util.exception.AuthenticationException;
 import ru.cvhub.authservice.util.exception.IncorrectPasswordException;
 import ru.cvhub.authservice.util.exception.UserNotFoundException;
+import ru.cvhub.authservice.util.validation.UserValidator;
 
 @Service
 @RequiredArgsConstructor
 public class AuthFacadeImpl implements AuthFacade {
     private final UserService userService;
     private final SessionService sessionService;
+    private final UserValidator userValidator;
 
     @Override
     @Transactional
     public @NotNull TokenDto register(@NotNull UserDto request) {
+        userValidator.throwIfInvalidContent(request);
         User createdUser = userService.registerUser(request);
-        TokenDto token = sessionService.createSessionToken(createdUser);
-        /*
-         * mfa etc.
-         */
-        return token;
+        return sessionService.createSessionToken(createdUser);
     }
 
     @Override
     @Transactional
     public @NotNull TokenDto login(@NotNull UserDto request) {
         try {
+            userValidator.throwIfInvalidContent(request);
             User user = userService.loginUser(request);
             return sessionService.createSessionToken(user);
         } catch (UserNotFoundException | IncorrectPasswordException e) {
-            throw new AuthenticationException(e);
+            throw AuthenticationException.invalidCredentials();
         }
     }
 
