@@ -8,6 +8,10 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+grpc:
+  server:
+    port: -1
+
 security:
   session:
     ttl: P1D

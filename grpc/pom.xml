@@ -51,6 +51,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <indentSize>4</indentSize> <!-- Set indentation to 4 spaces -->
+                    <lineSeparator>\n</lineSeparator> <!-- Use Unix-style line endings (optional, adjust as needed) -->
+                    <expandEmptyElements>true</expandEmptyElements> <!-- Optional: expand empty elements like <optional>true</optional> -->
+                    <nrOfIndentSpace>4</nrOfIndentSpace> <!-- Explicitly set number of spaces for indentation -->
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>

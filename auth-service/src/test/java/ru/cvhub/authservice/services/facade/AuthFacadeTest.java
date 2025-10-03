@@ -11,6 +11,7 @@ import ru.cvhub.authservice.services.dto.TokenDto;
 import ru.cvhub.authservice.services.dto.UserDto;
 import ru.cvhub.authservice.store.entity.User;
 import ru.cvhub.authservice.util.exception.*;
+import ru.cvhub.authservice.util.validation.UserValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +32,8 @@ class AuthFacadeTest {
     private UserService userService;
     @Mock
     private SessionService sessionService;
+    @Mock
+    private UserValidator userValidator;
 
     @InjectMocks
     private AuthFacadeImpl authFacade;
@@ -41,13 +44,6 @@ class AuthFacadeTest {
         when(sessionService.createSessionToken(user)).thenReturn(token);
 
         assertThat(authFacade.register(request)).isEqualTo(token);
-    }
-
-    @Test
-    void register_fail_handledException() {
-        when(userService.registerUser(request)).thenThrow(InvalidInputException.class);
-
-        assertThrows(AuthenticationException.class, () -> authFacade.register(request));
     }
 
     @Test

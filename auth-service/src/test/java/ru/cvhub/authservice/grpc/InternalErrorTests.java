@@ -3,6 +3,8 @@ package ru.cvhub.authservice.grpc;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.cvhub.authservice.AbstractServiceTest;
 import ru.cvhub.authservice.store.repository.UserRepository;
@@ -13,6 +15,7 @@ import static org.mockito.Mockito.when;
 import static ru.cvhub.authservice.grpc.TestFixtures.TEST_VALID_EMAIL;
 import static ru.cvhub.authservice.grpc.TestFixtures.TEST_VALID_PASSWORD;
 
+@ExtendWith(MockitoExtension.class)
 public class InternalErrorTests extends AbstractServiceTest {
     @MockitoBean
     private UserRepository userRepository;

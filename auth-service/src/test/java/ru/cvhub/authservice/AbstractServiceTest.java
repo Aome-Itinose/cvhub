@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.cvhub.authservice.util.AssertMatcher.assertThatOptional;
 
 @Getter(lombok.AccessLevel.PROTECTED)
-@SpringBootTest
+@SpringBootTest(classes = AuthServiceApplication.class)
 @ActiveProfiles("test")
 public abstract class AbstractServiceTest {
     @Rule
