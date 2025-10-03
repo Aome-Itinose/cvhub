@@ -12,7 +12,7 @@ import ru.cvhub.authservice.util.exception.PreconditionException;
 @RequiredArgsConstructor
 public class UserValidator implements Validator<UserValidator, UserDto> {
     private final static String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private final static String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$";
+    private final static String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=\\[\\]{};:,.<>?]).{12,}$";
 
     private final UserRepository userRepository;
 

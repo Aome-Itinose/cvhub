@@ -3,12 +3,12 @@ package ru.cvhub.authservice.grpc;
 import io.grpc.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@GrpcGlobalServerInterceptor
 @RequiredArgsConstructor
 public class ErrorHandlingInterceptor implements ServerInterceptor {
 
