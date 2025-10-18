@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/cvhub_auth_db
+    username: cassidal
+    password: A0meItin0se002016
+
+grpc:
+  server:
+    port: 9091

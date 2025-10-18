@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @IdClass(Binding.BindingId.class)
-@Table(name = "binding")
+@Table(name = "bindings")
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

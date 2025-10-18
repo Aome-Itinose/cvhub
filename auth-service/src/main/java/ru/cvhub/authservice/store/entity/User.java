@@ -47,6 +47,7 @@ public class User {
         this.email = email;
         this.passwordHash = passwordHash;
         this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
         this.isActive = true;
     }
 }

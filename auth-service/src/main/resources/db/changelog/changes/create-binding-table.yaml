@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: kamil
+      changes:
+        - createTable:
+            tableName: bindings
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_binding_user
+                    references: users(id)
+                    onDelete: CASCADE
+
+              - column:
+                  name: resource
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: permission
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: bindings
+            columnNames: user_id, resource, permission
+            constraintName: pk_binding
+
+        - createIndex:
+            tableName: bindings
+            indexName: idx_bindings_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: bindings
+            indexName: idx_bindings_resource
+            columns:
+              - column:
+                  name: resource

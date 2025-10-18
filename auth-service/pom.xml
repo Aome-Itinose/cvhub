@@ -111,6 +111,10 @@
             <artifactId>grpc-server-spring-boot-starter</artifactId>
             <version>${grpc-spring-boot-starter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

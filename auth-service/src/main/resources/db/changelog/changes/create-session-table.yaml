@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: cassidal
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_sessions
+                  name: refresh_token
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: expires_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: true
+                  name: is_valid
+                  type: BOOLEAN
+            tableName: sessions
+        - createIndex:
+            tableName: sessions
+            indexName: idx_sessions_user_id
+            columns:
+              - column:
+                  name: user_id

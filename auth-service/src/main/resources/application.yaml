@@ -3,13 +3,15 @@ spring:
     name: auth-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_EXTERNAL_PORT:5432}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 grpc:
   server:
-    port: 9090
+    port: ${INTERNAL_SERVER_PORT}
     reflection-service-enabled: true
 
 security:
@@ -17,6 +19,6 @@ security:
     ttl: P1D
   jwt:
     secret: ${JWT_SECRET}
-    expiration: PT1H
+    expiration: PT15M
     issuer: auth-service
     audience: auth-client
