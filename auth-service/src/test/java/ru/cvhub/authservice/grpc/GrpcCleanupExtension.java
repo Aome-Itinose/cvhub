@@ -2,7 +2,9 @@ package ru.cvhub.authservice.grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class GrpcCleanupExtension implements BeforeEachCallback, AfterEachCallba
     public void beforeEach(ExtensionContext context) {}
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         for (int i = resources.size() - 1; i >= 0; i--) {
             Object r = resources.get(i);
             try {
@@ -30,6 +32,7 @@ public class GrpcCleanupExtension implements BeforeEachCallback, AfterEachCallba
                     default -> System.out.println("Unknown resource type: " + r.getClass().getName()); //todo log
                 }
             } catch (Throwable ignored) {
+                // todo: logging
             }
         }
         resources.clear();

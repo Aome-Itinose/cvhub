@@ -61,7 +61,9 @@ public class SessionServiceImpl implements SessionService {
 
     private @NotNull Session findOrCreateActiveSession(@NotNull UUID userId) {
         return sessionRepository.findByUserId(userId)
+                .stream()
                 .filter(this::isSessionValid)
+                .findFirst()
                 .orElseGet(() -> {
                     Session newSession = new Session(userId, sessionTtl.toMillis());
                     return sessionRepository.save(newSession);

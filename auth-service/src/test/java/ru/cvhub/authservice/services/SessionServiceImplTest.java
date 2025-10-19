@@ -16,6 +16,8 @@ import ru.cvhub.authservice.store.repository.UserRepository;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -74,14 +76,14 @@ class SessionServiceImplTest {
 
     @Test
     void createSessionToken_withActiveSession() {
-        when(sessionRepository.findByUserId(TEST_USER_ID)).thenReturn(Optional.of(session));
+        when(sessionRepository.findByUserId(TEST_USER_ID)).thenReturn(List.of(session));
 
         assertThat(sessionService.createSessionToken(user)).isEqualTo(tokenDto);
     }
 
     @Test
     void createSessionToken_noActiveSession() {
-        when(sessionRepository.findByUserId(TEST_USER_ID)).thenReturn(Optional.empty());
+        when(sessionRepository.findByUserId(TEST_USER_ID)).thenReturn(Collections.emptyList());
         when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> {
             Session newSession = invocation.getArgument(0);
             newSession.refreshToken(UUID.fromString(VALID_REFRESH_TOKEN));
