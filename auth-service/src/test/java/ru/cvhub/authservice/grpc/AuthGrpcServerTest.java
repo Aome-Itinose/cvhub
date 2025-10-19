@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.cvhub.authservice.AbstractServiceTest;
+import ru.cvhub.authservice.AbstractGrpcServerTest;
 import ru.cvhub.authservice.store.entity.Session;
 import ru.cvhub.authservice.store.entity.User;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.cvhub.authservice.grpc.TestFixtures.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceTest extends AbstractServiceTest {
+class AuthGrpcServerTest extends AbstractGrpcServerTest {
 
     @BeforeEach
     void setUp() {
@@ -71,13 +71,13 @@ class AuthServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void register_complete() {
+    void register_success() {
         AS.RegisterRequest request = AS.RegisterRequest.newBuilder()
                 .setEmail(TEST_VALID_EMAIL)
                 .setPassword(TEST_VALID_PASSWORD)
                 .build();
 
-        AS.TokenResponse response = stub().register(request);
+        AS.TokenResponse response = authServiceStub().register(request);
 
         verifyUserByEmail(
                 TEST_VALID_EMAIL,
@@ -106,7 +106,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "INVALID_ARGUMENT: Invalid email format"
         );
         verifyEmpty(userRepository()::findByEmail, invalidEmail);
@@ -121,7 +121,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "INVALID_ARGUMENT: Password must be at least 8 characters. Contains at least one uppercase letter, one lowercase letter, one digit and one special character"
         );
         verifyEmpty(userRepository()::findByEmail, TEST_VALID_EMAIL);
@@ -136,7 +136,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "ALREADY_EXISTS: Email already exists"
         );
         verifyPresent(userRepository()::findByEmail, TEST_EXISTING_USER_EMAIL);
@@ -150,7 +150,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "INVALID_ARGUMENT: Email must be provided"
         );
         verifyEmpty(userRepository()::findByEmail, "");
@@ -165,7 +165,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "INVALID_ARGUMENT: Password must be provided"
         );
         verifyEmpty(userRepository()::findByEmail, "");
@@ -178,7 +178,7 @@ class AuthServiceTest extends AbstractServiceTest {
                 .setPassword(TEST_VALID_PASSWORD)
                 .build();
 
-        AS.TokenResponse response = stub().login(request);
+        AS.TokenResponse response = authServiceStub().login(request);
         verifyRefreshToken(response.getRefreshToken(), TEST_EXISTING_USER_ID);
         verifyAccessToken(
                 response.getAccessToken(),
@@ -197,7 +197,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "UNAUTHENTICATED: Invalid credentials"
         );
     }
@@ -211,7 +211,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "UNAUTHENTICATED: Invalid credentials"
         );
     }
@@ -225,7 +225,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "PERMISSION_DENIED: Account is inactive"
         );
     }
@@ -238,7 +238,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "INVALID_ARGUMENT: Password must be provided"
         );
     }
@@ -251,7 +251,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "INVALID_ARGUMENT: Email must be provided"
         );
     }
@@ -265,7 +265,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "INVALID_ARGUMENT: Invalid email format"
         );
     }
@@ -276,13 +276,13 @@ class AuthServiceTest extends AbstractServiceTest {
                 .setRefreshToken(TEST_VALID_REFRESH_TOKEN.toString())
                 .build();
 
-        AS.TokenResponse response = stub().refreshToken(request);
+        AS.TokenResponse response = authServiceStub().refreshToken(request);
         verifyRefreshToken(response.getRefreshToken(), TEST_EXISTING_USER_ID);
         verifyAccessToken(
                 response.getAccessToken(),
                 TEST_EXISTING_USER_ID,
                 TEST_EXISTING_USER_EMAIL,
-                false
+            false
         );
     }
 
@@ -294,7 +294,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().refreshToken(request),
+                () -> authServiceStub().refreshToken(request),
                 "INVALID_ARGUMENT: Invalid refresh token format"
         );
     }
@@ -307,7 +307,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().refreshToken(request),
+                () -> authServiceStub().refreshToken(request),
                 "UNAUTHENTICATED: Refresh token has expired"
         );
     }
@@ -320,7 +320,7 @@ class AuthServiceTest extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().refreshToken(request),
+                () -> authServiceStub().refreshToken(request),
                 "PERMISSION_DENIED: Account is inactive"
         );
     }

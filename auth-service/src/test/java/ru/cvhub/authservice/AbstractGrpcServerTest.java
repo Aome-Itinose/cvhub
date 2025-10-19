@@ -1,21 +1,24 @@
 package ru.cvhub.authservice;
 
 import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
 import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
-import io.grpc.testing.GrpcCleanupRule;
+import io.grpc.stub.AbstractStub;
+import io.grpc.stub.MetadataUtils;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import ru.cvhub.authservice.grpc.AuthServiceGrpc;
-import ru.cvhub.authservice.grpc.AuthServiceGrpcImpl;
-import ru.cvhub.authservice.grpc.ErrorHandlingInterceptor;
+import ru.cvhub.authservice.grpc.*;
+import ru.cvhub.authservice.grpc.interceptor.ErrorHandlingInterceptor;
+import ru.cvhub.authservice.grpc.interceptor.JwtServerInterceptor;
 import ru.cvhub.authservice.security.JwtUtil;
 import ru.cvhub.authservice.store.entity.Session;
 import ru.cvhub.authservice.store.entity.User;
@@ -31,12 +34,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.cvhub.authservice.util.AssertMatcher.assertThatOptional;
 
-@Getter(lombok.AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED)
 @SpringBootTest(classes = AuthServiceApplication.class)
 @ActiveProfiles("test")
-public abstract class AbstractServiceTest {
-    @Rule
-    public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+public abstract class AbstractGrpcServerTest {
+    @RegisterExtension
+    public final GrpcCleanupExtension grpcCleanup = new GrpcCleanupExtension();
+
+    protected AuthServiceGrpc.AuthServiceBlockingStub authServiceStub;
+    protected PrivateAuthServiceGrpc.PrivateAuthServiceBlockingStub privateAuthServiceStub;
+
     @Autowired
     private AuthServiceGrpcImpl authServiceGrpc;
     @Autowired
@@ -49,25 +56,44 @@ public abstract class AbstractServiceTest {
     private JwtUtil jwtUtil;
     @Autowired
     private ErrorHandlingInterceptor errorHandlingInterceptor;
-    private AuthServiceGrpc.AuthServiceBlockingStub stub;
-
     @Autowired
     private ConfigurableApplicationContext context;
+    @Autowired
+    private PrivateAuthServiceGrpcImpl privateAuthServiceGrpc;
+    @Autowired
+    private JwtServerInterceptor jwtServerInterceptor;
 
     @BeforeEach
     void setUp() throws IOException {
-        String serverName = InProcessServerBuilder.generateName();
-        grpcCleanup.register(InProcessServerBuilder.forName(serverName)
-                .directExecutor()
-                .addService(authServiceGrpc())
-                .intercept(errorHandlingInterceptor)
-                .build()
-                .start());
+        String authServiceName = InProcessServerBuilder.generateName();
+        grpcCleanup.register(
+                InProcessServerBuilder.forName(authServiceName)
+                        .directExecutor()
+                        .addService(authServiceGrpc)
+                        .intercept(errorHandlingInterceptor)
+                        .build()
+                        .start());
 
-        ManagedChannel channel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName)
+        String privateAuthServiceName = InProcessServerBuilder.generateName();
+        grpcCleanup.register(
+                InProcessServerBuilder.forName(privateAuthServiceName)
+                        .directExecutor()
+                        .addService(privateAuthServiceGrpc)
+                        .intercept(errorHandlingInterceptor)
+                        .intercept(jwtServerInterceptor)
+                        .build()
+                        .start()
+        );
+
+        ManagedChannel authServiceChannel = grpcCleanup.register(InProcessChannelBuilder.forName(authServiceName)
                 .directExecutor()
                 .build());
-        stub = AuthServiceGrpc.newBlockingStub(channel);
+        ManagedChannel privateAuthServiceChannel = grpcCleanup.register(InProcessChannelBuilder.forName(privateAuthServiceName)
+                .directExecutor()
+                .build());
+
+        authServiceStub = AuthServiceGrpc.newBlockingStub(authServiceChannel);
+        privateAuthServiceStub = PrivateAuthServiceGrpc.newBlockingStub(privateAuthServiceChannel);
     }
 
     protected void verifyAccessToken(
@@ -131,13 +157,6 @@ public abstract class AbstractServiceTest {
         assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 
-    protected void verifyException(
-            Class<StatusRuntimeException> exceptionClass,
-            Runnable executable
-    ) {
-        assertThrows(exceptionClass, executable::run);
-    }
-
     protected <P, T> void verifyEmpty(
             Function<P, Optional<T>> method,
             P parameter
@@ -152,5 +171,18 @@ public abstract class AbstractServiceTest {
     ) {
         Optional<T> result = method.apply(parameter);
         assertThat(result).isPresent();
+    }
+
+    protected <StubT extends AbstractStub<StubT>, RespT> RespT callWithToken(
+            StubT stub,
+            Function<StubT, RespT> grpcCall,
+            String accessToken
+    ) {
+        Metadata headers = new Metadata();
+        Metadata.Key<String> authKey = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
+        headers.put(authKey, "Bearer " + accessToken);
+
+        StubT stubWithHeaders = stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
+        return grpcCall.apply(stubWithHeaders);
     }
 }

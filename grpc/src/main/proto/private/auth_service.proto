@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "ru.cvhub.authservice.grpc";
+option java_outer_classname = "PAS";
+
+package auth;
+
+service PrivateAuthService {
+  rpc IsAuthenticated(EmptyMessage) returns (AuthStatusResponse);
+}
+
+message EmptyMessage {}
+
+message AuthStatusResponse {
+  bool is_authenticated = 1;
+}

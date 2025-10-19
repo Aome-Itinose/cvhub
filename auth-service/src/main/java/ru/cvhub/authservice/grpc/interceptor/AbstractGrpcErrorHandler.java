@@ -1,4 +1,4 @@
-package ru.cvhub.authservice.grpc;
+package ru.cvhub.authservice.grpc.interceptor;
 
 import io.grpc.Status;
 

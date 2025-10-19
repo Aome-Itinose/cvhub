@@ -15,12 +15,12 @@
         <java.version>24</java.version>
         <lombok.version>1.18.38</lombok.version>
         <grpc-module-version>1.0-SNAPSHOT</grpc-module-version>
-        <grpc-testing.version>1.75.0</grpc-testing.version>
+        <grpc-testing.version>1.76.0</grpc-testing.version>
         <assertj.version>4.0.0-M1</assertj.version>
         <uuid-creator.version>6.1.1</uuid-creator.version>
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
         <jwt.version>4.5.0</jwt.version>
-        <grpc-spring-boot-starter.version>2.15.0.RELEASE</grpc-spring-boot-starter.version>
+        <grpc-spring-boot-starter.version>3.0.0.RELEASE</grpc-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>

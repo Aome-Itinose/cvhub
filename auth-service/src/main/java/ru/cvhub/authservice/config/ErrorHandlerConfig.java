@@ -3,7 +3,7 @@ package ru.cvhub.authservice.config;
 import io.grpc.Status;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.cvhub.authservice.grpc.AbstractGrpcErrorHandler;
+import ru.cvhub.authservice.grpc.interceptor.AbstractGrpcErrorHandler;
 import ru.cvhub.authservice.util.exception.*;
 
 @Configuration
@@ -53,18 +53,6 @@ public class ErrorHandlerConfig {
             public Status handle(InactiveUserException exception) {
                 return Status
                         .PERMISSION_DENIED
-                        .withDescription(exception.getMessage());
-            }
-        };
-    }
-
-    @Bean
-    public AbstractGrpcErrorHandler<ExpiredRefreshTokenException> expiredRefreshTokenExceptionHandler() {
-        return new AbstractGrpcErrorHandler<>(ExpiredRefreshTokenException.class) {
-            @Override
-            public Status handle(ExpiredRefreshTokenException exception) {
-                return Status
-                        .UNAUTHENTICATED
                         .withDescription(exception.getMessage());
             }
         };

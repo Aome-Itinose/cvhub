@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+grpc:
+  server:
+    port: 0
+    reflection-service-enabled: true
+
+security:
+  session:
+    ttl: P1D
+  jwt:
+    secret: test-secret-key-for-testing-purposes-only
+    expiration: PT1H
+    issuer: auth-service
+    audience: auth-client

@@ -11,7 +11,7 @@ import ru.cvhub.authservice.store.entity.Session;
 import ru.cvhub.authservice.store.entity.User;
 import ru.cvhub.authservice.store.repository.SessionRepository;
 import ru.cvhub.authservice.store.repository.UserRepository;
-import ru.cvhub.authservice.util.exception.ExpiredRefreshTokenException;
+import ru.cvhub.authservice.util.exception.AuthenticationException;
 import ru.cvhub.authservice.util.exception.InactiveUserException;
 import ru.cvhub.authservice.util.exception.InvalidInputException;
 
@@ -47,7 +47,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = sessionRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(InvalidInputException::invalidRefreshToken);
         if (!session.isValid()) throw InvalidInputException.invalidRefreshToken();
-        if (session.expiresAt().isBefore(Instant.now())) throw new ExpiredRefreshTokenException();
+        if (session.expiresAt().isBefore(Instant.now())) throw AuthenticationException.expiredRefreshToken();
 
         UUID userId = session.userId();
         User user = userRepository.findById(userId)

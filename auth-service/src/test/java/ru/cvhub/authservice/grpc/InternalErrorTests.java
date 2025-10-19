@@ -3,10 +3,11 @@ package ru.cvhub.authservice.grpc;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ru.cvhub.authservice.AbstractServiceTest;
+import ru.cvhub.authservice.AbstractGrpcServerTest;
 import ru.cvhub.authservice.store.repository.UserRepository;
 import ru.cvhub.authservice.util.exception.InternalException;
 
@@ -16,7 +17,7 @@ import static ru.cvhub.authservice.grpc.TestFixtures.TEST_VALID_EMAIL;
 import static ru.cvhub.authservice.grpc.TestFixtures.TEST_VALID_PASSWORD;
 
 @ExtendWith(MockitoExtension.class)
-public class InternalErrorTests extends AbstractServiceTest {
+public class InternalErrorTests extends AbstractGrpcServerTest {
     @MockitoBean
     private UserRepository userRepository;
 
@@ -35,7 +36,7 @@ public class InternalErrorTests extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().register(request),
+                () -> authServiceStub().register(request),
                 "INTERNAL: Internal server error"
         );
     }
@@ -49,7 +50,7 @@ public class InternalErrorTests extends AbstractServiceTest {
 
         verifyException(
                 StatusRuntimeException.class,
-                () -> stub().login(request),
+                () -> authServiceStub().login(request),
                 "INTERNAL: Internal server error"
         );
     }

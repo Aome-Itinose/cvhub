@@ -10,7 +10,9 @@ import ru.cvhub.authservice.services.UserService;
 import ru.cvhub.authservice.services.dto.TokenDto;
 import ru.cvhub.authservice.services.dto.UserDto;
 import ru.cvhub.authservice.store.entity.User;
-import ru.cvhub.authservice.util.exception.*;
+import ru.cvhub.authservice.util.exception.AuthenticationException;
+import ru.cvhub.authservice.util.exception.IncorrectPasswordException;
+import ru.cvhub.authservice.util.exception.UserCreationFailedException;
 import ru.cvhub.authservice.util.validation.UserValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,8 +86,8 @@ class AuthFacadeTest {
 
     @Test
     void refresh_fail() {
-        when(sessionService.refreshSessionToken(token)).thenThrow(ExpiredRefreshTokenException.class);
+        when(sessionService.refreshSessionToken(token)).thenThrow(AuthenticationException.expiredRefreshToken());
 
-        assertThrows(ExpiredRefreshTokenException.class, () -> authFacade.refresh(token));
+        assertThrows(AuthenticationException.class, () -> authFacade.refresh(token));
     }
 }
