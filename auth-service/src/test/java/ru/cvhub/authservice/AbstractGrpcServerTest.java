@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import ru.cvhub.authservice.grpc.*;
 import ru.cvhub.authservice.grpc.interceptor.ErrorHandlingInterceptor;
-import ru.cvhub.authservice.grpc.interceptor.JwtServerInterceptor;
+import ru.cvhub.authservice.grpc.interceptor.GrpcJwtServerInterceptor;
 import ru.cvhub.authservice.security.JwtUtil;
 import ru.cvhub.authservice.store.entity.Session;
 import ru.cvhub.authservice.store.entity.User;
@@ -61,7 +61,7 @@ public abstract class AbstractGrpcServerTest {
     @Autowired
     private PrivateAuthServiceGrpcImpl privateAuthServiceGrpc;
     @Autowired
-    private JwtServerInterceptor jwtServerInterceptor;
+    private GrpcJwtServerInterceptor grpcJwtServerInterceptor;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -80,7 +80,7 @@ public abstract class AbstractGrpcServerTest {
                         .directExecutor()
                         .addService(privateAuthServiceGrpc)
                         .intercept(errorHandlingInterceptor)
-                        .intercept(jwtServerInterceptor)
+                        .intercept(grpcJwtServerInterceptor)
                         .build()
                         .start()
         );
@@ -115,14 +115,15 @@ public abstract class AbstractGrpcServerTest {
             UUID expectedUserId
     ) {
         UUID refreshToken = UUID.fromString(refreshTokenString);
-        assertThatOptional(sessionRepository.findById(refreshToken))
+        assertThatOptional(sessionRepository.findByRefreshToken(refreshToken))
                 .hasPartialMatch(new Session(
+                        null,
                         refreshToken,
                         expectedUserId,
                         null,
                         null,
                         true
-                ), "createdAt", "expiresAt");
+                ), "id", "createdAt", "expiresAt");
     }
 
     protected void verifyUserByEmail(

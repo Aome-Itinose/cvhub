@@ -1,5 +1,6 @@
 package ru.cvhub.authservice.store.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +20,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Session {
     @Id
+    @Column(name = "id")
+    UUID id;
+
+    @JsonIgnore
     @Column(name = "refresh_token", unique = true)
     UUID refreshToken;
 
@@ -37,10 +42,26 @@ public class Session {
     Boolean isValid;
 
     public Session(UUID userId, Long sessionDurationMs) {
+        this.id = UuidCreator.getTimeOrderedEpoch();
         this.refreshToken = UuidCreator.getTimeOrderedEpoch();
         this.userId = userId;
         this.createdAt = Instant.now();
         this.expiresAt = createdAt.plusMillis(sessionDurationMs);
         this.isValid = true;
+    }
+
+    public Session(
+            UUID refreshToken,
+            UUID userId,
+            Instant createdAt,
+            Instant expiresAt,
+            Boolean isValid
+    ) {
+        this.id = UuidCreator.getTimeOrderedEpoch();
+        this.refreshToken = refreshToken;
+        this.userId = userId;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+        this.isValid = isValid;
     }
 }

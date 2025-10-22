@@ -1,7 +1,7 @@
 package ru.cvhub.authservice.util.exception;
 
-public class InvalidInputException extends PreconditionException {
-    protected InvalidInputException(String message) {
+public final class InvalidInputException extends PreconditionException {
+    private InvalidInputException(String message) {
         super(message);
     }
 

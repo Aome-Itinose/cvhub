@@ -10,6 +10,12 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
                     primaryKeyName: pk_sessions
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
                   name: refresh_token
                   type: UUID
               - column:

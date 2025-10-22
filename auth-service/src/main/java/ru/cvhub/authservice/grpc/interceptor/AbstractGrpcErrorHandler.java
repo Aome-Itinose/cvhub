@@ -1,11 +1,12 @@
 package ru.cvhub.authservice.grpc.interceptor;
 
 import io.grpc.Status;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractGrpcErrorHandler<T extends Throwable> {
     private final Class<T> exceptionClass;
 
-    public AbstractGrpcErrorHandler(Class<T> exceptionClass) {
+    public AbstractGrpcErrorHandler(@NotNull Class<T> exceptionClass) {
         this.exceptionClass = exceptionClass;
     }
 

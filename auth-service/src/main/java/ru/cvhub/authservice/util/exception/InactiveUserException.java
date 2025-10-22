@@ -1,7 +1,7 @@
 package ru.cvhub.authservice.util.exception;
 
-public class InactiveUserException extends RuntimeException {
-    protected InactiveUserException(String message) {
+public final class InactiveUserException extends RuntimeException {
+    private InactiveUserException(String message) {
         super(message);
     }
 

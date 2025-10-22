@@ -1,7 +1,7 @@
 package ru.cvhub.authservice.util.exception;
 
-public class AuthenticationException extends RuntimeException {
-    protected AuthenticationException(String message) {
+public final class AuthenticationException extends RuntimeException {
+    private AuthenticationException(String message) {
         super(message);
     }
 

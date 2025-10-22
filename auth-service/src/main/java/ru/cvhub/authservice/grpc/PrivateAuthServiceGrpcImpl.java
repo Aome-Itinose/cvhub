@@ -2,9 +2,11 @@ package ru.cvhub.authservice.grpc;
 
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
-import ru.cvhub.authservice.grpc.interceptor.JwtServerInterceptor;
+import ru.cvhub.authservice.grpc.interceptor.GrpcJwtServerInterceptor;
+import ru.cvhub.authservice.util.logging.ErrorLoggableMethodCalls;
 
-@GrpcService(interceptors = {JwtServerInterceptor.class})
+@ErrorLoggableMethodCalls
+@GrpcService(interceptors = {GrpcJwtServerInterceptor.class})
 public class PrivateAuthServiceGrpcImpl extends PrivateAuthServiceGrpc.PrivateAuthServiceImplBase {
     @Override
     public void isAuthenticated(PAS.EmptyMessage request, StreamObserver<PAS.AuthStatusResponse> responseObserver) {

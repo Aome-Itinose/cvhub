@@ -24,9 +24,11 @@ public class User {
     @Column(unique = true, nullable = false)
     UUID id;
 
+    //    @JsonIgnore
     @Column(name = "email", nullable = false)
     String email;
 
+    //    @JsonIgnore
     @Column(name = "password_hash", nullable = false)
     String passwordHash;
 

@@ -2,17 +2,28 @@ package ru.cvhub.authservice.grpc.interceptor;
 
 import io.grpc.*;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 
 import java.util.List;
 
+@Order(2)
 @GrpcGlobalServerInterceptor
-@RequiredArgsConstructor
 public class ErrorHandlingInterceptor implements ServerInterceptor {
 
     private final List<AbstractGrpcErrorHandler<? extends Throwable>> handlers;
+    private final AbstractGrpcErrorHandler<Throwable> defaultExceptionHandler;
+
+    public ErrorHandlingInterceptor(
+            List<AbstractGrpcErrorHandler<? extends Throwable>> handlers,
+            @Qualifier("defaultExceptionHandler") AbstractGrpcErrorHandler<Throwable> defaultExceptionHandler
+    ) {
+        this.handlers = handlers;
+        this.defaultExceptionHandler = defaultExceptionHandler;
+        this.handlers.add(defaultExceptionHandler);
+    }
 
     @PostConstruct
     public void sortHandlers() {
@@ -25,7 +36,14 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
             Metadata metadata,
             ServerCallHandler<ReqT, RespT> serverCallHandler
     ) {
-        return new ForwardingServerCallListener.SimpleForwardingServerCallListener<>(serverCallHandler.startCall(serverCall, metadata)) {
+        ServerCall<ReqT, RespT> forwardingServerCall = new ForwardingServerCall.SimpleForwardingServerCall<>(serverCall) {
+            @Override
+            public void close(Status status, Metadata trailers) {
+                super.close(status, trailers);
+            }
+        };
+
+        return new ForwardingServerCallListener.SimpleForwardingServerCallListener<>(serverCallHandler.startCall(forwardingServerCall, metadata)) {
             @Override
             public void onHalfClose() {
                 try {
@@ -34,7 +52,7 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
                     Status status = mapExceptionToStatus(ex);
                     Metadata metadata = new Metadata();
                     metadata.put(Metadata.Key.of("error_type", Metadata.ASCII_STRING_MARSHALLER), ex.getClass().getSimpleName());
-                    serverCall.close(status, metadata);
+                    forwardingServerCall.close(status, metadata);
                 }
             }
         };
@@ -53,8 +71,6 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
             }
         }
 
-        return Status.UNKNOWN
-                .withDescription("Unexpected error: " + (ex.getMessage() != null ? ex.getMessage() : "No message"))
-                .withCause(ex);
+        return defaultExceptionHandler.handle(ex);
     }
 }

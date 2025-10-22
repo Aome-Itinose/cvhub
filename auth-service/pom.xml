@@ -21,6 +21,8 @@
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
         <jwt.version>4.5.0</jwt.version>
         <grpc-spring-boot-starter.version>3.0.0.RELEASE</grpc-spring-boot-starter.version>
+        <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
+        <jackson-datatype.version>2.20.0</jackson-datatype.version>
     </properties>
 
     <dependencyManagement>
@@ -64,6 +66,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-datatype.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -114,6 +121,15 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

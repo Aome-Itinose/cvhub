@@ -1,6 +1,7 @@
 package ru.cvhub.authservice.config;
 
 import io.grpc.Status;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.cvhub.authservice.grpc.interceptor.AbstractGrpcErrorHandler;
@@ -59,10 +60,11 @@ public class ErrorHandlerConfig {
     }
 
     @Bean
-    public AbstractGrpcErrorHandler<RuntimeException> otherExceptionHandler() {
-        return new AbstractGrpcErrorHandler<>(RuntimeException.class) {
+    @Qualifier("defaultExceptionHandler")
+    public AbstractGrpcErrorHandler<Throwable> defaultExceptionHandler() {
+        return new AbstractGrpcErrorHandler<>(Throwable.class) {
             @Override
-            public Status handle(RuntimeException exception) {
+            public Status handle(Throwable exception) {
                 return Status
                         .INTERNAL
                         .withDescription("Internal server error");

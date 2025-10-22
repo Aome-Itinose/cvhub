@@ -1,6 +1,6 @@
 package ru.cvhub.authservice.util.exception;
 
-public class UserCreationFailedException extends RuntimeException {
+public final class UserCreationFailedException extends RuntimeException {
     public UserCreationFailedException(String message) {
         super(message);
     }

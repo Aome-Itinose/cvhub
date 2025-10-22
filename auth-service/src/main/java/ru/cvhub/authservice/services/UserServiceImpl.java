@@ -2,6 +2,7 @@ package ru.cvhub.authservice.services;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Marker;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,20 @@ import ru.cvhub.authservice.util.exception.InactiveUserException;
 import ru.cvhub.authservice.util.exception.IncorrectPasswordException;
 import ru.cvhub.authservice.util.exception.UserCreationFailedException;
 import ru.cvhub.authservice.util.exception.UserNotFoundException;
+import ru.cvhub.authservice.util.logging.UserLog;
 import ru.cvhub.authservice.util.mapping.Mapper;
 import ru.cvhub.authservice.util.validation.UserValidator;
 
 import java.util.Optional;
 
+import static ru.cvhub.authservice.util.logging.LogUtil.info;
+import static ru.cvhub.authservice.util.logging.LogUtil.marker;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Marker LOG_MARKER = marker("USER", "SERVICE");
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserValidator userValidator;
@@ -27,7 +34,11 @@ public class UserServiceImpl implements UserService {
     public @NotNull User registerUser(@NotNull UserDto userDto) {
         try {
             userValidator.throwIfExists(userDto);
-            return userRepository.save(Mapper.toEntity(userDto, passwordEncoder));
+            User createdUser = userRepository.save(Mapper.toEntity(userDto, passwordEncoder));
+
+            info(LOG_MARKER, "Created new user", "user", UserLog.from(createdUser));
+
+            return createdUser;
         } catch (DataAccessException e) {
             throw new UserCreationFailedException("Database error during user creation: " + e.getMessage());
         }
@@ -47,6 +58,9 @@ public class UserServiceImpl implements UserService {
         if (!user.isActive()) {
             throw InactiveUserException.userInactive();
         }
+
+        info(LOG_MARKER, "Logged in user", "user", UserLog.from(user));
+
         return user;
     }
 }
