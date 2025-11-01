@@ -3,7 +3,7 @@ name: auth-service
 on:
   pull_request:
     branches:
-      - main
+      - master
     types:
       - closed
     paths:
