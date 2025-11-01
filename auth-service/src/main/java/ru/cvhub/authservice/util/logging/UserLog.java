@@ -8,9 +8,17 @@ import java.util.UUID;
 
 public record UserLog(
         UUID id,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX", timezone = "Europe/Moscow")
+        @JsonFormat(
+                shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX",
+                timezone = "Europe/Moscow"
+        )
         Instant createdAt,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX", timezone = "Europe/Moscow")
+        @JsonFormat(
+                shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX",
+                timezone = "Europe/Moscow"
+        )
         Instant updatedAt,
         Boolean isActive
 ) implements EntityLog {

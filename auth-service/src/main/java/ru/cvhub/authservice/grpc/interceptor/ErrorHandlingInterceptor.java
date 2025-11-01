@@ -36,14 +36,17 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
             Metadata metadata,
             ServerCallHandler<ReqT, RespT> serverCallHandler
     ) {
-        ServerCall<ReqT, RespT> forwardingServerCall = new ForwardingServerCall.SimpleForwardingServerCall<>(serverCall) {
-            @Override
-            public void close(Status status, Metadata trailers) {
-                super.close(status, trailers);
-            }
-        };
+        ServerCall<ReqT, RespT> forwardingServerCall =
+                new ForwardingServerCall.SimpleForwardingServerCall<>(serverCall) {
+                    @Override
+                    public void close(Status status, Metadata trailers) {
+                        super.close(status, trailers);
+                    }
+                };
 
-        return new ForwardingServerCallListener.SimpleForwardingServerCallListener<>(serverCallHandler.startCall(forwardingServerCall, metadata)) {
+        return new ForwardingServerCallListener.SimpleForwardingServerCallListener<>(
+                serverCallHandler.startCall(forwardingServerCall, metadata)
+        ) {
             @Override
             public void onHalfClose() {
                 try {
@@ -51,7 +54,10 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
                 } catch (RuntimeException ex) {
                     Status status = mapExceptionToStatus(ex);
                     Metadata metadata = new Metadata();
-                    metadata.put(Metadata.Key.of("error_type", Metadata.ASCII_STRING_MARSHALLER), ex.getClass().getSimpleName());
+                    metadata.put(
+                            Metadata.Key.of("error_type", Metadata.ASCII_STRING_MARSHALLER),
+                            ex.getClass().getSimpleName()
+                    );
                     forwardingServerCall.close(status, metadata);
                 }
             }
