@@ -1,0 +1,21 @@
+name: workflows-changed
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+
+jobs:
+  check-workflows:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate workflow
+        run: echo "will be realized soon ;)"
+
+  completed:
+    runs-on: ubuntu-24.04
+    needs: [ check-workflows ]
+    steps:
+      - name: All jobs completed successfully
+        run: echo "✅ All jobs finished successfully!"
+
