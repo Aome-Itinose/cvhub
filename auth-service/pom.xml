@@ -14,15 +14,17 @@
     <properties>
         <java.version>24</java.version>
         <lombok.version>1.18.38</lombok.version>
-        <grpc-module-version>1.0-SNAPSHOT</grpc-module-version>
-        <grpc-testing.version>1.76.0</grpc-testing.version>
+        <grpc.module.version>1.0-SNAPSHOT</grpc.module.version>
+        <grpc.testing.version>1.76.0</grpc.testing.version>
         <assertj.version>4.0.0-M1</assertj.version>
-        <uuid-creator.version>6.1.1</uuid-creator.version>
+        <uuid.creator.version>6.1.1</uuid.creator.version>
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
         <jwt.version>4.5.0</jwt.version>
-        <grpc-spring-boot-starter.version>3.0.0.RELEASE</grpc-spring-boot-starter.version>
-        <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
-        <jackson-datatype.version>2.20.0</jackson-datatype.version>
+        <grpc.spring.boot.starter.version>3.0.0.RELEASE</grpc.spring.boot.starter.version>
+        <logstash.logback.encoder.version>8.1</logstash.logback.encoder.version>
+        <logback.version>1.5.20</logback.version>
+        <jackson.datatype.version>2.20.0</jackson.datatype.version>
+        <commons.lang3.version>3.19.0</commons.lang3.version>
     </properties>
 
     <dependencyManagement>
@@ -43,6 +45,16 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -50,7 +62,7 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-testing</artifactId>
-            <version>${grpc-testing.version}</version>
+            <version>${grpc.testing.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -70,7 +82,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-datatype.version}</version>
+            <version>${jackson.datatype.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -80,7 +92,7 @@
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
-            <version>${uuid-creator.version}</version>
+            <version>${uuid.creator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -90,7 +102,7 @@
         <dependency>
             <groupId>ru.cassidal</groupId>
             <artifactId>grpc</artifactId>
-            <version>${grpc-module-version}</version>
+            <version>${grpc.module.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
@@ -116,16 +128,21 @@
         <dependency>
             <groupId>net.devh</groupId>
             <artifactId>grpc-server-spring-boot-starter</artifactId>
-            <version>${grpc-spring-boot-starter.version}</version>
+            <version>${grpc.spring.boot.starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash-logback-encoder.version}</version>
+            <version>${logstash.logback.encoder.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
