@@ -68,3 +68,10 @@ jobs:
           use-annotations: true
           upload-result: false
           push-fixes: 'none'
+
+  completed:
+    runs-on: ubuntu-24.04
+    needs: [test, verify, qodana]
+    steps:
+      - name: All jobs completed successfully
+        run: echo "✅ All jobs finished successfully!"
