@@ -43,8 +43,12 @@ jobs:
           java-version: '24'
           distribution: 'temurin'
 
+      - name: Build grpc
+        run: mvn -f grpc/pom.xml clean install -DskipTests
+
       - name: Verify auth-service
         run: mvn -f auth-service/pom.xml clean verify
+
 
   build-push:
     if: github.event.pull_request.merged == true
