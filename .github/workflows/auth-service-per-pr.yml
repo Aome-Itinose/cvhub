@@ -29,7 +29,6 @@ jobs:
 
   verify:
     runs-on: ubuntu-24.04
-    needs: test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,6 +38,9 @@ jobs:
         with:
           java-version: '24'
           distribution: 'temurin'
+
+      - name: Build grpc
+        run: mvn -f grpc/pom.xml clean install -DskipTests
 
       - name: Verify auth-service
         run: mvn -f auth-service/pom.xml clean verify
