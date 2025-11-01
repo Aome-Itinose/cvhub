@@ -1,0 +1,68 @@
+name: auth-service-per-pr
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'auth-service/**'
+      - 'grpc/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Build grpc
+        run: mvn -f grpc/pom.xml clean install -DskipTests
+
+      - name: Test auth-service
+        run: mvn -f auth-service/pom.xml clean test
+
+  verify:
+    runs-on: ubuntu-24.04
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Verify auth-service
+        run: mvn -f auth-service/pom.xml clean verify
+
+  qodana:
+    runs-on: ubuntu-latest
+    needs: [test, verify]
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2025.2
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          pr-mode: true
+          use-caches: true
+          post-pr-comment: true
+          use-annotations: true
+          upload-result: false
+          push-fixes: 'none'
