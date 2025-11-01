@@ -27,6 +27,7 @@ public class AuthFacadeImpl implements AuthFacade {
         userValidator.throwIfInvalidContent(request);
         User createdUser = userService.registerUser(request);
         return sessionService.createSessionToken(createdUser);
+        [eq]
     }
 
     @Override
