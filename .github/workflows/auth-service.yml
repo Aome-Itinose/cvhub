@@ -30,10 +30,26 @@ jobs:
       - name: Test auth-service
         run: mvn -f auth-service/pom.xml clean test
 
+  verify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Verify auth-service
+        run: mvn -f auth-service/pom.xml clean verify
+
   build-push:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
-    needs: test
+    needs: [test, verify]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3

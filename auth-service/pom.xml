@@ -163,15 +163,37 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>pom-sort</id>
                         <goals>
                             <goal>sort</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-style</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

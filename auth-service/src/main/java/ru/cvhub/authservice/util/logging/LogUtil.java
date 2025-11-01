@@ -14,38 +14,70 @@ import java.util.Map;
 public class LogUtil {
     private static final Logger log = LoggerFactory.getLogger(LogUtil.class);
 
-    public static void info(@NotNull Marker marker, @NotNull String message, @NotNull String key, @NotNull Object body) {
+    public static void info(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull String key,
+            @NotNull Object body
+    ) {
         info(marker, message, Map.of(key, body));
     }
 
-    public static void info(@NotNull Marker marker, @NotNull String message, @NotNull Map<String, Object> objects) {
+    public static void info(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull Map<String, Object> objects
+    ) {
         Map<String, Payload> payloads = toPayloadMap(objects);
         log.info(marker, message, StructuredArguments.value("payloads", payloads));
     }
 
-    public static void info(@NotNull Marker marker, @NotNull String message) {
+    public static void info(
+            @NotNull Marker marker,
+            @NotNull String message
+    ) {
         log.info(marker, message);
     }
 
-    public static void error(@NotNull Marker marker, @NotNull String message, @NotNull String key, @NotNull Object body) {
+    public static void error(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull String key,
+            @NotNull Object body
+    ) {
         error(marker, message, Map.of(key, body));
     }
 
-    public static void error(@NotNull Marker marker, @NotNull String message, @NotNull Map<String, Object> objects) {
+    public static void error(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull Map<String, Object> objects
+    ) {
         Map<String, Payload> payloads = toPayloadMap(objects);
         log.error(marker, message, StructuredArguments.value("payloads", payloads));
     }
 
-    public static void warn(@NotNull Marker marker, @NotNull String message, @NotNull String key, @NotNull Object body) {
+    public static void warn(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull String key,
+            @NotNull Object body
+    ) {
         warn(marker, message, Map.of(key, body));
     }
 
-    public static void warn(@NotNull Marker marker, @NotNull String message, @NotNull Map<String, Object> objects) {
+    public static void warn(
+            @NotNull Marker marker,
+            @NotNull String message,
+            @NotNull Map<String, Object> objects
+    ) {
         Map<String, Payload> payloads = toPayloadMap(objects);
         log.warn(marker, message, StructuredArguments.value("payloads", payloads));
     }
 
-    private static @NotNull Map<String, Payload> toPayloadMap(@NotNull Map<String, Object> objects) {
+    private static @NotNull Map<String, Payload> toPayloadMap(
+            @NotNull Map<String, Object> objects
+    ) {
         return objects.entrySet().stream()
                 .collect(
                         java.util.stream.Collectors.toMap(
@@ -75,7 +107,9 @@ public class LogUtil {
         return maskedPart + data.substring(data.length() - visibleChars);
     }
 
-    private static String getClassName(@NotNull Object obj) {
+    private static String getClassName(
+            @NotNull Object obj
+    ) {
         if (obj instanceof EntityLog entityLog) {
             return entityLog.getClassName();
         } else {

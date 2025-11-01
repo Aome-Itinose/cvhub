@@ -18,7 +18,8 @@ public final class InvalidInputException extends PreconditionException {
     }
 
     public static InvalidInputException invalidPasswordFormat() {
-        return new InvalidInputException("Password must be at least 8 characters. Contains at least one uppercase letter, one lowercase letter, one digit and one special character");
+        return new InvalidInputException("Password must be at least 8 characters. " +
+                "Contains at least one uppercase letter, one lowercase letter, one digit and one special character");
     }
 
     public static InvalidInputException blankPassword() {
