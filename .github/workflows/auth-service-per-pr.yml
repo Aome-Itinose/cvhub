@@ -3,7 +3,7 @@ name: auth-service-per-pr
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - 'auth-service/**'
       - 'grpc/**'
