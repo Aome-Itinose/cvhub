@@ -19,6 +19,6 @@ spec:
           image: aomeitinose/cvhub.auth-service:latest
           ports:
             - containerPort: 9090
-          env:
-            - name: ENV
-              value: "production"
+          envFrom:
+            - secretRef:
+                name: auth-secret

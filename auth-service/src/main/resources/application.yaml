@@ -3,7 +3,7 @@ spring:
     name: auth-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_EXTERNAL_PORT:5432}/${POSTGRES_DB}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   jpa:
@@ -14,7 +14,7 @@ spring:
 
 grpc:
   server:
-    port: ${INTERNAL_SERVER_PORT}
+    port: ${SERVER_PORT:9090}
     reflection-service-enabled: true
 
 security:
