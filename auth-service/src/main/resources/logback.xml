@@ -13,6 +13,19 @@
         </filter>
     </appender>
 
+    <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"my-service"}</customFields>
+            <includeMdcKeyName>grpc_method</includeMdcKeyName>
+            <includeMdcKeyName>payload_class</includeMdcKeyName>
+            <includeMdcKeyName>payload</includeMdcKeyName>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
     <!-- ====== ФАЙЛОВЫЙ ЛОГЕР (JSON для Loki / ELK) ====== -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app.log</file>
@@ -36,7 +49,7 @@
 
     <!-- ====== КОРНЕВОЙ ЛОГГЕР ====== -->
     <root level="DEBUG">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDOUT_JSON"/>
         <appender-ref ref="FILE"/>
     </root>
 
